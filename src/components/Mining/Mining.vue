@@ -3,9 +3,43 @@
 
         <div id="dashboardMining" class="walletSection">
 
+<<<<<<< HEAD
             <div id="miningController">
                 <p class="miningPowerText">Mining <br/> <span class="secondWord">Power</span></p>
                 <strong id="threadsNumber" :style="{background: this.workers ? 0 : '#d23c25'}">{{this.workers}}</strong>
+=======
+            <div type="button" class="miningBar">
+                <slider ref="refMiningSlider" @sliderChanged="this.changeWorkers" />
+            </div>
+
+            <div class="miningDetails" v-on:click="toggleMiningInfo()">
+                <div class="miningLabelContainer">
+                    <p class="miningTypeIndicator">
+                        {{this.started ? ((this.hashesPerSecond <= 1) ? 'PoS Mining ' : 'PoW Mining ') : 'Not Started'}}
+                    </p>
+                    <svg :style="{display: (this.started && this.hashesPerSecond > 0) ? 'inline-block' : 'none'}" version="1.1" class="miningLoader" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                     width="40px" height="40px" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">
+                      <path fill="#fec02c" d="M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z">
+                        <animateTransform attributeType="xml"
+                          attributeName="transform"
+                          type="rotate"
+                          from="0 25 25"
+                          to="360 25 25"
+                          dur="0.6s"
+                          repeatCount="indefinite"/>
+                        </path>
+                    </svg>
+                    <p class="miningProgressIndicator">
+                         {{this.started ? (this.hashesPerSecond <= 1 ? (this.hashesPerSecond == 1 ? 'Staking...' : 'You need 100 WEBD or wait for PoW ⓘ') : this.hashesPerSecond + ' hash/sec ') : 'No Mining Power'}}
+                    </p>
+                </div>
+            </div>
+            <div class="hoverInfo miningInfo" :ref="'miningInfo'" v-on:click="toggleMiningInfo()">
+
+                <div class="infoText helpCursor" style="letter-spacing: 0.1px" title="Proof-of-Work (PoW) Mining Information">
+                    WebDollar knows two types of mining. The types cycle in a pattern of 30 blocks (20 minutes). The first 10 blocks are Proof-of-Work. Followed by 20 blocks of Proof-of-Stake.
+                </div>
+>>>>>>> feature/improved-mining-messaging
 
                 <div type="button" class="miningBar">
                     <slider ref="refMiningSlider" @sliderChanged="changeWorkers" />
