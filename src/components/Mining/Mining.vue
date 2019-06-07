@@ -3,11 +3,6 @@
 
         <div id="dashboardMining" class="walletSection">
 
-<<<<<<< HEAD
-            <div id="miningController">
-                <p class="miningPowerText">Mining <br/> <span class="secondWord">Power</span></p>
-                <strong id="threadsNumber" :style="{background: this.workers ? 0 : '#d23c25'}">{{this.workers}}</strong>
-=======
             <div type="button" class="miningBar">
                 <slider ref="refMiningSlider" @sliderChanged="this.changeWorkers" />
             </div>
@@ -39,7 +34,6 @@
                 <div class="infoText helpCursor" style="letter-spacing: 0.1px" title="Proof-of-Work (PoW) Mining Information">
                     WebDollar knows two types of mining. The types cycle in a pattern of 30 blocks (20 minutes). The first 10 blocks are Proof-of-Work. Followed by 20 blocks of Proof-of-Stake.
                 </div>
->>>>>>> feature/improved-mining-messaging
 
                 <div type="button" class="miningBar">
                     <slider ref="refMiningSlider" @sliderChanged="changeWorkers" />
