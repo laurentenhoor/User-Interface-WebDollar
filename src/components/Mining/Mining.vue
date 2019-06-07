@@ -1,7 +1,7 @@
 <template>
     <div id="dashboardMining" class="walletSection">
 
-        <div id="minningController">
+        <div id="miningController">
             <p class="miningPowerText">Mining <br/> <span class="secondWord">Power</span></p>
             <strong id="threadsNumber" :style="{background: this.workers ? 0 : '#d23c25'}">{{this.workers}}</strong>
 
@@ -10,10 +10,11 @@
             </div>
 
             <div class="miningDetails" v-on:click="toggleMiningInfo()">
-                <p class="mingingTypeIndicator">
-                    {{this.started ? ((this.hashesPerSecond <= 1) ? 'PoS Mining ' : 'PoW Mining ') : 'Not Started'}}
-                </p>
-                <svg :style="{display: (this.started==false ||  this.hashesPerSecond === 0) ? 'inline-block' : 'none'}" version="1.1" class="miningLoader" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+                <div class="miningLabelContainer">
+                    <p class="miningTypeIndicator">
+                        {{this.started ? ((this.hashesPerSecond <= 1) ? 'PoS Mining ' : 'PoW Mining ') : 'Not Started'}}
+                    </p>
+                    <svg :style="{display: (this.started && this.hashesPerSecond > 0) ? 'inline-block' : 'none'}" version="1.1" class="miningLoader" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
                      width="40px" height="40px" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve">
                       <path fill="#fec02c" d="M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z">
                         <animateTransform attributeType="xml"
@@ -24,9 +25,11 @@
                           dur="0.6s"
                           repeatCount="indefinite"/>
                         </path>
-                </svg>
-                 <icon v-if="this.started && this.hashesPerSecond > 1" class="isImining miningLoader" alt="Mining" text="Mining Address" icon="mining" style="display: inline-block" />
-                <p class="miningProgressIndicator">{{this.started ? (this.hashesPerSecond <= 1 ? 'Staking...' : this.hashesPerSecond + ' hash/sec ') : 'No Mining Power'}}</p>
+                    </svg>
+                    <p class="miningProgressIndicator">
+                         {{this.started ? (this.hashesPerSecond <= 1 ? (this.hashesPerSecond == 1 ? 'Staking...' : 'You need 100 WEBD or wait for PoW ⓘ') : this.hashesPerSecond + ' hash/sec ') : 'No Mining Power'}}
+                    </p>
+                </div>
             </div>
             <div class="hoverInfo miningInfo" :ref="'miningInfo'" v-on:click="toggleMiningInfo()">
 
@@ -117,15 +120,14 @@
 
         data: function () {
             return {
-                started: true,
-                hashesPerSecond: 2,
+                started: false,
+                hashesPerSecond: 0,
                 workers: localStorage.getItem("miner-settings-worker-count") || 0,
                 minerAddress:'',
                 status: '',
                 loaded:false,
                 stopTimerHandler: null,
                 isPos: false,
-                hoverInfoRightValue: -840,
                 _prevWorkers: null,
             }
         },
@@ -224,7 +226,6 @@
 
             toggleMiningInfo() {
                 let ref = this.$refs['miningInfo']
-                console.log(ref.style.right)
                 ref.style.right == '0px' ? ref.style.right = '-840px' : ref.style.right = '0px';
             },
         
@@ -291,6 +292,10 @@
         opacity: 0.96;
     }
 
+    .miningLabelContainer {
+        margin: auto 5px
+    }
+
     .balanceInfo {
         height: 80px;
         width: 300px;
@@ -307,19 +312,24 @@
 
     .infoTitle {
         font-size:12px;
-        font-weight: bold;
+        font-weight: 800;
     }
 
     .infoText {
-        font-size: 12px;
+        font-size: 11px;
         margin-bottom: 20px;
+        font-weight: 200;
     }
-    .mingingTypeIndicator {
+    .miningTypeIndicator {
         margin-right:5px;
-        font-weight: bold;
+        font-weight: 800;
+        font-size: 12px;
     }
     .miningProgressIndicator {
         margin-left:5px;
+        font-size: 10px;
+        line-height: 10px;
+        font-weight:200;
     }
 
     .WEBD:hover + .balanceInfo, .balanceInfo:hover{
@@ -404,12 +414,13 @@
         transition: all .3s linear;
     }
 
-    .minningController p{
+    .miningController p{
         font-size: 20px;
         margin-right: -4px;
     }
 
     .miningDetails{
+        display:flex;
         vertical-align: top;
         display: inherit;
         line-height: 32px;
@@ -419,7 +430,6 @@
 
     .miningDetails p{
         margin-top: 0;
-        font-size: 12px;
         color: #D5D5D5;
     }
 
@@ -446,9 +456,7 @@
     }
 
     #allWallets{
-        /*border-top: solid 1px #7b7b7b;*/
         display: block;
-        /*padding-top: 10px;*/
     }
 
     .miningPowerText{
@@ -518,8 +526,9 @@
         margin-left: 5px;
     }
 
-    #minningController{
+    #miningController{
         width: 100%;
+        height:100%;
         border-top:none;
         padding-bottom: 0;
         margin-bottom: 15px;
@@ -597,19 +606,20 @@
 
         .miningLoader {
             position: absolute;
-            right: 8px;
-            top:0;
-            margin-top:0px;
+            right: 0;
+            top: 0;
         }
 
         .miningDetails{
-            width:110px;
+            min-width:102px;
+            max-width:102px;
+            height:100%;
             position:relative;
-            margin: 8px 0 0 0 !important;
             line-height: 13px !important;
             color: #969696;
             float: right;
             margin-right: 15px;
+            display:flex;
         }
 
         .miningInfo {
@@ -618,13 +628,13 @@
             height: auto;
         }
 
-        .mingingTypeIndicator {
+        .miningTypeIndicator {
             margin:0;
             display:block !important;
         }
         .miningProgressIndicator {
             margin:0;
-            font-size:10px !important;
+            padding-bottom:2px;
         }
 
         .miningBar{
@@ -638,16 +648,18 @@
         #dashboardMining{
             margin-bottom: 0;
         }
-        #minningController, .walletStartMining, .WEBD{
+        #miningController, .walletStartMining, .WEBD{
             display: inline-block;
-            width: 100%;
+            
+            
         }
-        #minningController{
+        #miningController{
             background-color: #0000;
             margin-bottom: 0;
             height: 33px;
             border-top: none;
             margin-top: 50px;
+            height:100%;
         }
         #threadsControll .button p{
             line-height: 43px;
@@ -704,7 +716,7 @@
         #threadsControll .button:first-child{
             border:none;
         }
-        #minningController{
+        #miningController{
             margin-top:0
         }
         #dashboardMining{
